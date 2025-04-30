@@ -4,6 +4,7 @@
 #include <sstream>
 #include <algorithm>
 #include <climits>
+#include <string>
 
 using namespace std;
 
@@ -179,11 +180,13 @@ public:
 
     void print()
     {
+        string day[7]={"Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"};
         for (int i = 0; i < 7; i++)
         {
+            cout<<day[i];
             for (int j = 0; j < 2; j++)
             {
-                cout << BestFloors[i][j] << " ";
+                cout <<" Elevator "<<j+1<<" = "<< BestFloors[i][j] << " "<<endl<<"\t";
             }
             cout << endl;
         }
