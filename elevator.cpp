@@ -9,15 +9,15 @@ int main()
 {
     fstream fin("data.csv");
     vector<vector<int>> floordata(7);
-    vector<string> row;
-    string line, word;
+    string line;
 
-    getline(fin, line);
+    getline(fin, line); //skips the header in csv file
 
     while (getline(fin, line))
     {
-        row.clear();
         stringstream s(line);
+        vector<string> row;
+        string word;
         while (getline(s, word, ','))
         {
             row.push_back(word);
