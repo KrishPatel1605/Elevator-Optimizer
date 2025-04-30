@@ -3,6 +3,7 @@
 #include <vector>
 #include <sstream>
 #include <algorithm>
+#include <climits>
 
 using namespace std;
 
@@ -114,10 +115,74 @@ public:
         for(int i=0;i<7;i++)
         {
             freq[i].resize(noOfFloors+1,0);
-            for(int j=0;j<floordata[i].size();j++)
+            int size=floordata[i].size();
+            for(int j=0;j<size;j++)
             {
                 freq[i][floordata[i][j]]++;
             }
+        }
+    }
+
+    vector<vector<int>> getFrequency()
+    {
+        return freq;
+    }
+};
+
+class Algorithm
+{
+private:
+    vector<vector<int>> freq, BestFloors;
+    int noOfFloors;
+
+public:
+    Algorithm(vector<vector<int>> f)
+    {
+        freq=f;
+        noOfFloors=freq[0].size()-1;
+        BestFloors.resize(7);
+        for(int i=0;i<7;i++)
+        {
+            BestFloors[i].resize(2,0);
+        }
+    }
+
+    void calculateBestFloors()
+    {
+        for(int d=0;d<7;d++)
+        {
+            int MinTime=INT_MAX;
+            for(int i=0;i<=noOfFloors;i++)
+            {
+                for(int j=i+1;j<=noOfFloors;j++)
+                {
+                    int time=0;
+                    for(int m=0;m<=noOfFloors;m++)
+                    {
+                        int disti=abs(m-i);
+                        int distj=abs(m-j);
+                        time+=min(disti,distj)*freq[d][m];
+                    }
+                    if(MinTime>time)
+                    {
+                        MinTime=time;
+                        BestFloors[d][0]=i;
+                        BestFloors[d][1]=j;
+                    }
+                }
+            }
+        }
+    }
+
+    void print()
+    {
+        for(int i=0;i<7;i++)
+        {
+            for(int j=0;j<2;j++)
+            {
+                cout<<BestFloors[i][j]<<" ";
+            }
+            cout<<endl;
         }
     }
 };
@@ -129,5 +194,8 @@ int main()
     ProcessData processor(data.getData());
     processor.calculateFrequency();
     processor.print();
+    Algorithm algo(processor.getFrequency());
+    algo.calculateBestFloors();
+    algo.print();
     return 0;
 }
