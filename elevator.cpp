@@ -8,7 +8,7 @@ using namespace std;
 int main()
 {
     fstream fin("data.csv");
-    vector<vector<int>> floore1(7), floore2(7);
+    vector<vector<int>> floordata(7);
     vector<string> row;
     string line, word;
 
@@ -24,21 +24,14 @@ int main()
         }
         int day = stoi(row[1]);
         int floor = stoi(row[3]);
-        if (row[0] == "E1")
-        {
-            floore1[day - 1].push_back(floor);
-        }
-        else if (row[0] == "E2")
-        {
-            floore2[day - 1].push_back(floor);
-        }
+        floordata[day - 1].push_back(floor);
     }
 
     for (int i = 0; i < 7; i++)
     {
-        for (int j = 0; j < 50; j++)
+        for (int j = 0; j < floordata[i].size(); j++)
         {
-            cout << floore1[i][j] << " ";
+            cout << floordata[i][j] << " ";
         }
         cout << endl;
     }
