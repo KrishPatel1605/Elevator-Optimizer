@@ -65,16 +65,16 @@ public:
 class ProcessData
 {
 private:
-    vector<vector<int>> floordata,freq;
+    vector<vector<int>> floordata, freq;
     int noOfFloors;
 
 public:
     ProcessData(vector<vector<int>> data)
     {
-        floordata=data;
-        noOfFloors=-1;
+        floordata = data;
+        noOfFloors = -1;
     }
-    
+
     void print()
     {
         for (int i = 0; i < 7; i++)
@@ -85,38 +85,38 @@ public:
             }
             cout << endl;
         }
-        cout<<noOfFloors<<endl;
-        for(int i=0;i<7;i++)
+        cout << noOfFloors << endl;
+        for (int i = 0; i < 7; i++)
         {
-            for(int j=0;j<=noOfFloors;j++)
+            for (int j = 0; j <= noOfFloors; j++)
             {
-                cout<<freq[i][j]<<" ";
+                cout << freq[i][j] << " ";
             }
-            cout<<endl;
+            cout << endl;
         }
     }
 
     void calNoOfFloors()
     {
         int temp;
-        for(int i=0;i<7;i++)
+        for (int i = 0; i < 7; i++)
         {
-            noOfFloors=max(noOfFloors,*max_element(floordata[i].begin(),floordata[i].end()));
+            noOfFloors = max(noOfFloors, *max_element(floordata[i].begin(), floordata[i].end()));
         }
     }
 
     void calculateFrequency()
     {
-        if(noOfFloors<0)
+        if (noOfFloors < 0)
         {
             calNoOfFloors();
         }
         freq.resize(7);
-        for(int i=0;i<7;i++)
+        for (int i = 0; i < 7; i++)
         {
-            freq[i].resize(noOfFloors+1,0);
-            int size=floordata[i].size();
-            for(int j=0;j<size;j++)
+            freq[i].resize(noOfFloors + 1, 0);
+            int size = floordata[i].size();
+            for (int j = 0; j < size; j++)
             {
                 freq[i][floordata[i][j]]++;
             }
@@ -138,36 +138,39 @@ private:
 public:
     Algorithm(vector<vector<int>> f)
     {
-        freq=f;
-        noOfFloors=freq[0].size()-1;
+        freq = f;
+        noOfFloors = freq[0].size() - 1;
         BestFloors.resize(7);
-        for(int i=0;i<7;i++)
-        {
-            BestFloors[i].resize(2,0);
-        }
     }
 
-    void calculateBestFloors()
+    void calculateBestFloors(int noOfElevators)
     {
-        for(int d=0;d<7;d++)
+        for (int i = 0; i < 7; i++)
         {
-            int MinTime=INT_MAX;
-            for(int i=0;i<=noOfFloors;i++)
+            BestFloors[i].resize(noOfElevators, 0);
+        }
+        if (noOfElevators == 2)
+        {
+            for (int d = 0; d < 7; d++)
             {
-                for(int j=i+1;j<=noOfFloors;j++)
+                int MinTime = INT_MAX;
+                for (int i = 0; i <= noOfFloors; i++)
                 {
-                    int time=0;
-                    for(int m=0;m<=noOfFloors;m++)
+                    for (int j = i + 1; j <= noOfFloors; j++)
                     {
-                        int disti=abs(m-i);
-                        int distj=abs(m-j);
-                        time+=min(disti,distj)*freq[d][m];
-                    }
-                    if(MinTime>time)
-                    {
-                        MinTime=time;
-                        BestFloors[d][0]=i;
-                        BestFloors[d][1]=j;
+                        int time = 0;
+                        for (int m = 0; m <= noOfFloors; m++)
+                        {
+                            int disti = abs(m - i);
+                            int distj = abs(m - j);
+                            time += min(disti, distj) * freq[d][m];
+                        }
+                        if (MinTime > time)
+                        {
+                            MinTime = time;
+                            BestFloors[d][0] = i;
+                            BestFloors[d][1] = j;
+                        }
                     }
                 }
             }
@@ -176,14 +179,19 @@ public:
 
     void print()
     {
-        for(int i=0;i<7;i++)
+        for (int i = 0; i < 7; i++)
         {
-            for(int j=0;j<2;j++)
+            for (int j = 0; j < 2; j++)
             {
-                cout<<BestFloors[i][j]<<" ";
+                cout << BestFloors[i][j] << " ";
             }
-            cout<<endl;
+            cout << endl;
         }
+    }
+
+    vector<vector<int>> getBestFloors()
+    {
+        return BestFloors;
     }
 };
 
@@ -193,9 +201,8 @@ int main()
     data.read("data.csv");
     ProcessData processor(data.getData());
     processor.calculateFrequency();
-    processor.print();
     Algorithm algo(processor.getFrequency());
-    algo.calculateBestFloors();
+    algo.calculateBestFloors(2);
     algo.print();
     return 0;
 }
