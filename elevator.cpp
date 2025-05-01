@@ -134,7 +134,7 @@ class Algorithm
 {
 private:
     vector<vector<int>> freq, BestFloors;
-    int noOfFloors,noOfElevators;
+    int noOfFloors, noOfElevators;
 
 public:
     Algorithm(vector<vector<int>> f)
@@ -144,9 +144,65 @@ public:
         BestFloors.resize(7);
     }
 
+    void generateCombinations(int start, int depth, vector<int> current, vector<vector<int>>& combinations)
+    {
+        if (depth == noOfElevators)
+        {
+            combinations.push_back(current);
+            return;
+        }
+        for (int i = start; i <= noOfFloors; i++)
+        {
+            current.push_back(i);
+            generateCombinations(i + 1, depth + 1, current, combinations);
+            current.pop_back();
+        }
+    }
+
+    void calusingrecursion(int elev)
+    {
+        noOfElevators = elev;
+        for (int i = 0; i < 7; i++)
+        {
+            BestFloors[i].resize(noOfElevators, 0);
+        }
+        if (noOfElevators < 1 || noOfElevators > 5)
+        {
+            cout << "Enter the number of elevators from 1 to 5" << endl;
+            return;
+        }
+        for (int d = 0; d < 7; d++)
+        {
+            int MinTime = INT_MAX;
+            vector<int> current;
+            vector<vector<int>> combinations;
+            generateCombinations(0, 0, current, combinations);
+            int combsize = combinations.size();
+            for (int c = 0; c < combsize; c++)
+            {
+                vector<int> combo = combinations[c];
+                int time = 0;
+                for (int m = 0; m <= noOfFloors; m++)
+                {
+                    int minDist = INT_MAX;
+                    for (int k = 0; k < noOfElevators; k++)
+                    {
+                        minDist = std::min(minDist, std::abs(m - combo[k]));
+                    }
+                    time += minDist * freq[d][m];
+                }
+                if (MinTime > time)
+                {
+                    MinTime = time;
+                    BestFloors[d] = combo;
+                }
+            }
+        }
+    }
+
     void calculateBestFloors(int elev)
     {
-        noOfElevators=elev;
+        noOfElevators = elev;
         for (int i = 0; i < 7; i++)
         {
             BestFloors[i].resize(noOfElevators, 0);
@@ -234,7 +290,7 @@ int main()
     processor.calculateFrequency();
 
     Algorithm algo(processor.getFrequency());
-    algo.calculateBestFloors(2);
+    algo.calusingrecursion(2);
 
     algo.print();
 
