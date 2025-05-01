@@ -134,7 +134,7 @@ class Algorithm
 {
 private:
     vector<vector<int>> freq, BestFloors;
-    int noOfFloors;
+    int noOfFloors,noOfElevators;
 
 public:
     Algorithm(vector<vector<int>> f)
@@ -144,14 +144,36 @@ public:
         BestFloors.resize(7);
     }
 
-    void calculateBestFloors(int noOfElevators)
+    void calculateBestFloors(int elev)
     {
+        noOfElevators=elev;
         for (int i = 0; i < 7; i++)
         {
             BestFloors[i].resize(noOfElevators, 0);
         }
-        if (noOfElevators == 2)
+        switch (noOfElevators)
         {
+        case 1:
+            for (int d = 0; d < 7; d++)
+            {
+                int MinTime = INT_MAX;
+                for (int i = 0; i <= noOfFloors; i++)
+                {
+                    int time = 0;
+                    for (int m = 0; m <= noOfFloors; m++)
+                    {
+                        int dist = abs(m - i);
+                        time += dist * freq[d][m];
+                    }
+                    if (MinTime > time)
+                    {
+                        MinTime = time;
+                        BestFloors[d][0] = i;
+                    }
+                }
+            }
+            break;
+        case 2:
             for (int d = 0; d < 7; d++)
             {
                 int MinTime = INT_MAX;
@@ -175,18 +197,23 @@ public:
                     }
                 }
             }
+            break;
+
+        default:
+            cout << "Enter the no. Elevators from 1-2";
         }
     }
 
     void print()
     {
-        string day[7]={"Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"};
+        string day[7] = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"};
         for (int i = 0; i < 7; i++)
         {
-            cout<<day[i];
-            for (int j = 0; j < 2; j++)
+            cout << day[i];
+            for (int j = 0; j < noOfElevators; j++)
             {
-                cout <<" Elevator "<<j+1<<" = "<< BestFloors[i][j] << " "<<endl<<"\t";
+                cout << " Elevator " << j + 1 << " = " << BestFloors[i][j] << " " << endl
+                     << "\t";
             }
             cout << endl;
         }
@@ -202,10 +229,14 @@ int main()
 {
     FetchFloorData data;
     data.read("data.csv");
+
     ProcessData processor(data.getData());
     processor.calculateFrequency();
+
     Algorithm algo(processor.getFrequency());
     algo.calculateBestFloors(2);
+
     algo.print();
+
     return 0;
 }
