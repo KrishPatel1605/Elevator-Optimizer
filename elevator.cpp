@@ -159,7 +159,7 @@ public:
         }
     }
 
-    void calusingrecursion(int elev)
+    void calculateBestFloors(int elev)
     {
         noOfElevators = elev;
         for (int i = 0; i < 7; i++)
@@ -200,66 +200,6 @@ public:
         }
     }
 
-    void calculateBestFloors(int elev)
-    {
-        noOfElevators = elev;
-        for (int i = 0; i < 7; i++)
-        {
-            BestFloors[i].resize(noOfElevators, 0);
-        }
-        switch (noOfElevators)
-        {
-        case 1:
-            for (int d = 0; d < 7; d++)
-            {
-                int MinTime = INT_MAX;
-                for (int i = 0; i <= noOfFloors; i++)
-                {
-                    int time = 0;
-                    for (int m = 0; m <= noOfFloors; m++)
-                    {
-                        int dist = abs(m - i);
-                        time += dist * freq[d][m];
-                    }
-                    if (MinTime > time)
-                    {
-                        MinTime = time;
-                        BestFloors[d][0] = i;
-                    }
-                }
-            }
-            break;
-        case 2:
-            for (int d = 0; d < 7; d++)
-            {
-                int MinTime = INT_MAX;
-                for (int i = 0; i <= noOfFloors; i++)
-                {
-                    for (int j = i + 1; j <= noOfFloors; j++)
-                    {
-                        int time = 0;
-                        for (int m = 0; m <= noOfFloors; m++)
-                        {
-                            int disti = abs(m - i);
-                            int distj = abs(m - j);
-                            time += min(disti, distj) * freq[d][m];
-                        }
-                        if (MinTime > time)
-                        {
-                            MinTime = time;
-                            BestFloors[d][0] = i;
-                            BestFloors[d][1] = j;
-                        }
-                    }
-                }
-            }
-            break;
-
-        default:
-            cout << "Enter the no. Elevators from 1-2";
-        }
-    }
-
     void print()
     {
         string day[7] = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"};
@@ -290,7 +230,7 @@ int main()
     processor.calculateFrequency();
 
     Algorithm algo(processor.getFrequency());
-    algo.calusingrecursion(2);
+    algo.calculateBestFloors(2);
 
     algo.print();
 
